@@ -1,5 +1,21 @@
 import scrapy
 
+def conv2Num(stars):
+    if stars == 'One':
+        stars = 1
+    elif stars == 'Two':
+        stars = 2
+    elif stars == 'Three':
+        stars = 3
+    elif stars == 'Four':
+        stars = 4
+    elif stars == 'Five':
+        stars = 5 
+    else: 
+        stars = 0 
+
+    return stars  
+
 class BooksSpider(scrapy.Spider):
     name = 'books_spider'
 
@@ -15,8 +31,12 @@ class BooksSpider(scrapy.Spider):
         for b in books:
             title = b.css("h3 a::attr('title')").get()
             price = float(b.css('p.price_color::text').get()[1:])
+            stars = b.css('p.star-rating').attrib['class'].split(' ')[1]
+
+            numStars = int(conv2Num(stars))
 
             yield {
                 'Title': title,
-                'Price': price
+                'Price': price,
+                'Stars': numStars
             }
