@@ -1,4 +1,5 @@
 import scrapy
+from scrapy.http import request
 
 def conv2Num(stars):
     if stars == 'One':
@@ -40,3 +41,9 @@ class BooksSpider(scrapy.Spider):
                 'Price': price,
                 'Stars': numStars
             }
+
+            next_page = 'li.next a'.attrib['href']
+
+            if next_page:
+                next_page = response.urljoin(next_page)
+                yield scrapy.Request(next_page, callback=self.parse)
